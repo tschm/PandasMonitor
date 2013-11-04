@@ -2,5 +2,5 @@
 
 A simple Monitor for Pandas DataFrame objects.
 
-![Screenshot](/screenshot.PNG) 
+![Screenshot](http://raw.github.com/tschm/PandasMonitor/master/screenshot.PNG) 
 
