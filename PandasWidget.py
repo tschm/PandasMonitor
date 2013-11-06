@@ -5,6 +5,19 @@ from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QTAgg as NavigationToolbar
 
 
+def getApp(args):
+    return QtGui.QApplication(args)
+
+
+class FrameMonitor(QtGui.QMainWindow):
+    def __init__(self, frame, function):
+        super(FrameMonitor, self).__init__()
+        self.widget = PandasWidget(frame, function)
+        self.setCentralWidget(self.widget)
+        self.setWindowTitle("Pandas Dataframe Monitor")
+        self.show()
+
+
 class PandasWidget(QtGui.QWidget):
     class __MatplotlibWidget(QtGui.QWidget):
         def __init__(self):
@@ -37,35 +50,39 @@ class PandasWidget(QtGui.QWidget):
         def selectedRow(self):
             return self.table.selectedIndexes()[0].row()
 
-    def __init__(self, function):
+    def __init__(self, frame, function):
         QtGui.QWidget.__init__(self)
 
         grid = QtGui.QGridLayout()
-        self.__list = self.__TableWidget()
+
+        self.list = self.__TableWidget()
         self.table = self.__TableWidget()
         self.plot = self.__MatplotlibWidget()
 
-        grid.addWidget(self.__list.table, 1, 0, 1, 2)
+        grid.addWidget(self.list.table, 1, 0, 1, 2)
         grid.addWidget(self.table.table, 2, 0, 1, 2)
         grid.addWidget(self.plot, 1, 2, 2, 8)
 
         self.setLayout(grid)
         self.function = function
 
-        QtCore.QObject.connect(self.__list.table, QtCore.SIGNAL("clicked(QModelIndex)"), self.__on_list_clicked)
+        self.frame = frame
+        self.__setKeys(frame.keys())
+
+        QtCore.QObject.connect(self.list.table, QtCore.SIGNAL("clicked(QModelIndex)"), self.__on_list_clicked)
 
     def __on_list_clicked(self):
-        row = self.__list.selectedRow()
+        row = self.list.selectedRow()
         key = self.__keys[row]
         self.plot.figure.clf()
         self.table.clear()
-        self.function(key)
+        self.function(self.plot.figure, self.table, self.frame[key])
         self.plot.canvas.draw()
 
-    def setKeys(self, keys):
-        self.__list.clear()
+    def __setKeys(self, keys):
+        self.list.clear()
 
         for k in keys:
-            self.__list.append([k])
+            self.list.append([k])
 
         self.__keys = keys
