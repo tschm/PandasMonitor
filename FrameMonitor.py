@@ -76,7 +76,15 @@ class PandasWidget(QtGui.QWidget):
         key = self.__keys[row]
         self.plot.figure.clf()
         self.table.clear()
-        self.function(self.plot.figure, self.table, self.frame[key])
+        ax1 = self.plot.figure.add_subplot(111)
+        #xxx = self.function(self.frame[key])
+        # print(xxx)
+        (p, t) = self.function(self.frame[key])
+        print(p)
+        print(t)
+        p.plot(ax=ax1)
+        self.table.appendSeries(t)
+        # self.function(self.plot.figure, self.table, self.frame[key])
         self.plot.canvas.draw()
 
     def __setKeys(self, keys):

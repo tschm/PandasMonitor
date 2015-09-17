@@ -1,7 +1,8 @@
 #!/bin/bash
-rm -rf ./env
-conda create --yes -p ./env python=2.7.6 pip pandas pyqt matplotlib
-#./env/bin/pip install -r requirements.txt
+FOLDER="$(cd "$(dirname "$0")" && pwd)"
+rm -rf ${FOLDER}/env
+conda create --yes -p ${FOLDER}/env python=3.4.3 pandas=0.16.2 pyqt=4.11.3 matplotlib=1.4.3
+
 
 
 
